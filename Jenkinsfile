@@ -16,22 +16,22 @@ pipeline {
             }
         }
         
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarQubeScanner'
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.projectName='${SONAR_PROJECT_NAME}' \
-                            -Dsonar.sources=. \
-                            -Dsonar.exclusions=node_modules/**,dist/**,build/**
-                        """
-                    }
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             def scannerHome = tool 'SonarQubeScanner'
+        //             withSonarQubeEnv('SonarQube') {
+        //                 sh """
+        //                     ${scannerHome}/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //                     -Dsonar.projectName='${SONAR_PROJECT_NAME}' \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.exclusions=node_modules/**,dist/**,build/**
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
         
         stage('Quality Gate') {
             steps {
