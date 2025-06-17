@@ -128,7 +128,7 @@ pipeline {
         }
         success {
             echo 'Pipeline succeeded!'
-            Email notification will work once SMTP is configured
+            // Email notification will work once SMTP is configured
             // emailext (
             //     subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
             //     body: "Good news! The pipeline succeeded.",
