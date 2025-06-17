@@ -129,20 +129,20 @@ pipeline {
         success {
             echo 'Pipeline succeeded!'
             Email notification will work once SMTP is configured
-            emailext (
-                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "Good news! The pipeline succeeded.",
-                to: "hrishikesh.w@ergobite.com"
-            )
+            // emailext (
+            //     subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            //     body: "Good news! The pipeline succeeded.",
+            //     to: "hrishikesh.w@ergobite.com"
+            // )
         }
         failure {
             echo 'Pipeline failed!'
-            Email notification will work once SMTP is configured
-            emailext (
-                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "The pipeline failed. Please check the logs.",
-                to: "hrishikesh.w@ergobite.com"
-            )
+            // Email notification will work once SMTP is configured
+            // emailext (
+            //     subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            //     body: "The pipeline failed. Please check the logs.",
+            //     to: "hrishikesh.w@ergobite.com"
+            // )
         }
     }
 }
