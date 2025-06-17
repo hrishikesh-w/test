@@ -144,7 +144,7 @@ pipeline {
             emailext (
                 subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: "Good news! The pipeline succeeded.",
-                to: "your-email@example.com"
+                to: "hrishikesh.w@ergobite.com"
             )
         }
         failure {
@@ -153,7 +153,7 @@ pipeline {
             emailext (
                 subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: "The pipeline failed. Please check the logs.",
-                to: "your-email@example.com"
+                to: "hrishikesh.w@ergobite.com"
             )
         }
     }
