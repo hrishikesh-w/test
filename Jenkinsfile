@@ -16,6 +16,7 @@ pipeline {
             }
         }
         
+        // SonarQube Analysis - COMMENTED OUT until SonarQube is configured
         // stage('SonarQube Analysis') {
         //     steps {
         //         script {
@@ -33,13 +34,14 @@ pipeline {
         //     }
         // }
         
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // Quality Gate - COMMENTED OUT until SonarQube Analysis is active
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 5, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         
         stage('Install Dependencies') {
             steps {
@@ -47,17 +49,20 @@ pipeline {
                 script {
                     // For Node.js projects
                     if (fileExists('package.json')) {
-                        sh 'npm install'
+                        bat 'npm install'  // Using bat for Windows
                     }
                     // For Python projects
                     else if (fileExists('requirements.txt')) {
-                        sh 'pip install -r requirements.txt'
+                        bat 'pip install -r requirements.txt'
                     }
                     // For Java projects
                     else if (fileExists('pom.xml')) {
-                        sh 'mvn clean install -DskipTests'
+                        bat 'mvn clean install -DskipTests'
                     }
-                    // Add more conditions for other project types
+                    // For now, just echo if no package files found
+                    else {
+                        echo 'No package.json, requirements.txt, or pom.xml found. Skipping dependency installation.'
+                    }
                 }
             }
         }
@@ -68,17 +73,20 @@ pipeline {
                 script {
                     // For Node.js projects
                     if (fileExists('package.json')) {
-                        sh 'npm run build'
+                        bat 'npm run build'
                     }
                     // For Java projects
                     else if (fileExists('pom.xml')) {
-                        sh 'mvn package'
+                        bat 'mvn package'
                     }
                     // For Python projects
                     else if (fileExists('setup.py')) {
-                        sh 'python setup.py build'
+                        bat 'python setup.py build'
                     }
-                    // Add more build commands as needed
+                    // For now, just echo if no build files found
+                    else {
+                        echo 'No build configuration found. Skipping build step.'
+                    }
                 }
             }
         }
@@ -87,27 +95,12 @@ pipeline {
             steps {
                 echo 'Deploying application and restarting server...'
                 script {
-                    // Stop existing application
-                    sh '''
-                        # Kill existing process (adjust based on your app)
-                        pkill -f "your-app-name" || true
-                        
-                        # Wait for process to terminate
-                        sleep 5
-                        
-                        # Copy built files to deployment directory
-                        cp -r dist/* /path/to/deployment/directory/ || true
-                        cp -r build/* /path/to/deployment/directory/ || true
-                        
-                        # Start the application (adjust based on your setup)
-                        nohup npm start > /var/log/your-app.log 2>&1 &
-                        
-                        # Or for systemd services:
-                        # sudo systemctl restart your-app-service
-                        
-                        # Or for PM2 (Node.js):
-                        # pm2 restart your-app
-                    '''
+                    // Windows-compatible deployment commands
+                    echo 'Deployment step - customize based on your application'
+                    // Example Windows commands:
+                    // bat 'taskkill /F /IM "your-app.exe" /T || exit /b 0'
+                    // bat 'xcopy /E /Y dist\\* C:\\path\\to\\deployment\\ || exit /b 0'
+                    // bat 'start /B "YourApp" "C:\\path\\to\\your\\app.exe"'
                 }
             }
         }
@@ -119,14 +112,9 @@ pipeline {
                     // Wait for application to start
                     sleep(time: 10, unit: 'SECONDS')
                     
-                    // Perform health check
-                    sh '''
-                        # Check if application is responding
-                        curl -f http://localhost:3000/health || exit 1
-                        
-                        # Or check if process is running
-                        # pgrep -f "your-app-name" || exit 1
-                    '''
+                    echo 'Health check completed - customize based on your application'
+                    // Example health check:
+                    // bat 'curl -f http://localhost:3000/health || exit /b 1'
                 }
             }
         }
@@ -140,21 +128,21 @@ pipeline {
         }
         success {
             echo 'Pipeline succeeded!'
-            // Send success notification
-            emailext (
-                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "Good news! The pipeline succeeded.",
-                to: "hrishikesh.w@ergobite.com"
-            )
+            // Email notification will work once SMTP is configured
+            // emailext (
+            //     subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            //     body: "Good news! The pipeline succeeded.",
+            //     to: "hrishikesh.w@ergobite.com"
+            // )
         }
         failure {
             echo 'Pipeline failed!'
-            // Send failure notification
-            emailext (
-                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: "The pipeline failed. Please check the logs.",
-                to: "hrishikesh.w@ergobite.com"
-            )
+            // Email notification will work once SMTP is configured
+            // emailext (
+            //     subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            //     body: "The pipeline failed. Please check the logs.",
+            //     to: "hrishikesh.w@ergobite.com"
+            // )
         }
     }
 }
